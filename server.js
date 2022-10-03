@@ -7,15 +7,13 @@ const MongoStore = require('connect-mongo');
 require('dotenv').config();
 
 const app = express();
-app.listen(process.env.PORT || 8000, () => {
-  console.log('Server is running...');
-});
+
 //Walidacja!
 
 const NODE_ENV = process.env.NODE_ENV;
-let MongoDB_Username = process.env.MONGODB_USERNAME;
-let MongoDB_Password = process.env.MONGODB_PASSWORD;
-const secret = process.env.SECRET;
+const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
+const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
+const SECRET = process.env.SECRET;
 let dbUri = ''; //??
 
 if (NODE_ENV === 'production') dbUri = 'url to remote db';
@@ -23,7 +21,7 @@ else if (NODE_ENV === 'test')
   dbUri = 'mongodb://localhost:27017/Ads_FullStackAppDBtest';
 else dbUri = 'mongodb://localhost:27017/Ads_FullStackAppDB';
 
-connectionString = `mongodb+srv://${MongoDB_Username}:${MongoDB_Password}@cluster0.telw8lc.mongodb.net/Ads_FullStackAppDB?retryWrites=true&w=majority`;
+connectionString = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.telw8lc.mongodb.net/Ads_FullStackAppDB?retryWrites=true&w=majority`;
 
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
@@ -45,7 +43,7 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: secret,
+    secret: SECRET,
     store: MongoStore.create({
       mongoUrl: connectionString,
       resave: false,
@@ -68,7 +66,7 @@ app.use('/auth', authRoutes);
 app.use(express.static(path.join(__dirname, '/client/build')));
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
 
@@ -79,4 +77,8 @@ db.on('error', (err) => console.log('Error ' + err.message));
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found...' });
+});
+
+app.listen(process.env.PORT || 8000, () => {
+  console.log('Server is running...');
 });

@@ -2,6 +2,8 @@ const Ad = require('../models/ad.model');
 const User = require('../models/user.model');
 const getImageFileType = require('../utils/getImageFileType');
 const fs = require('fs');
+const isString = require('../utils/validators/isString');
+const isNumber = require('../utils/validators/isNumber');
 
 exports.getAll = async (req, res) => {
   try {
@@ -14,7 +16,9 @@ exports.getAll = async (req, res) => {
 exports.getById = async (req, res) => {
   try {
     const ad = await Ad.findById(req.params.id).populate('sellerInfo');
-    if (ad) return res.json(ad);
+    if (ad) {
+      return res.json(ad);
+    }
     return res.status(404).json({ message: 'Not found' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -39,21 +43,18 @@ exports.post = async (req, res) => {
   const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
   try {
     const user = await User.findOne({ login: req.session.user.login });
-    // const userId = await User.findOne({ _id: req.session.id });
-    console.log(user);
+    if (!user) {
+      fs.unlinkSync(`./public/uploads/${req.file.filename}`);
+      return res.status(400).send({ message: 'Bad request' });
+    }
     if (
-      title &&
-      typeof title === 'string' &&
-      content &&
-      typeof content === 'string' &&
-      publicationDate &&
-      typeof publicationDate === 'string' &&
+      isString(title) &&
+      isString(content) &&
+      isString(publicationDate) &&
+      isNumber(price) &&
+      isString(localization) &&
       req.file &&
       ['image/png', 'image/jpeg', 'image/gif'].includes(fileType) &&
-      price &&
-      !isNaN(price) &&
-      localization &&
-      typeof localization === 'string' &&
       user
     ) {
       const newAd = await Ad.create({
@@ -65,12 +66,11 @@ exports.post = async (req, res) => {
         localization,
         sellerInfo: user._id,
       });
-      // await newAd.save();
-      res.status(201).send({ message: 'New Ad added' + newAd });
-    } else {
-      fs.unlinkSync(`./public/uploads/${req.file.filename}`);
-      res.status(400).send({ message: 'Bad request' });
+      return res.status(201).send({ message: 'New Ad added' + newAd });
     }
+
+    fs.unlinkSync(`./public/uploads/${req.file.filename}`);
+    return res.status(400).send({ message: 'Bad request' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -80,28 +80,24 @@ exports.put = async (req, res) => {
   const { title, content, publicationDate, price, localization } = req.body;
   const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
   try {
+    const ad = await Ad.findOne({ _id: req.params.id });
     const user = await User.findOne({ login: req.session.user.login });
-    const adWithUser = await Ad.findOne({ sellerInfo: user._id });
-    // czy należy do niego?
+    if (ad.sellerInfo != user._id) {
+      fs.unlinkSync(`./public/uploads/${req.file.filename}`);
+      return res.status(400).send({ message: 'Bad request' });
+    }
     if (
-      title &&
-      typeof title === 'string' &&
-      content &&
-      typeof content === 'string' &&
-      publicationDate &&
-      typeof publicationDate === 'string' &&
-      price &&
-      !isNaN(price) &&
-      localization &&
-      typeof localization === 'string' &&
-      adWithUser
+      isString(title) &&
+      isString(content) &&
+      isString(publicationDate) &&
+      isNumber(price) &&
+      isString(localization)
     ) {
       let newAd = {};
       if (
         req.file &&
         ['image/png', 'image/jpeg', 'image/gif'].includes(fileType)
       ) {
-        const ad = await Ad.findOne({ _id: req.params.id });
         newAd = await Ad.findOneAndUpdate(
           { _id: req.params.id },
           {
@@ -133,13 +129,12 @@ exports.put = async (req, res) => {
           { new: true }
         );
       }
-
-      if (newAd) {
+      if (newAd !== undefined) {
         return res
           .status(201)
           .send({ message: 'Ad updated', modifiedAd: newAd });
       }
-      res.status(404).send({ message: 'Not found' });
+      return res.status(404).send({ message: 'Not found' });
     }
   } catch (err) {
     return res.status(500).send({ message: err.message });
@@ -147,14 +142,18 @@ exports.put = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  // sprawdzić, czy należy do niego
   try {
-    const ad = await Ad.findOneAndDelete({ _id: req.params.id });
+    const ad = await Ad.findOne({ _id: req.params.id });
+    const user = await User.findOne({ login: req.session.user.login });
+    if (ad.sellerInfo != user._id) {
+      return res.status(400).send({ message: 'Bad request' });
+    }
     if (ad) {
+      await Ad.deleteOne({ _id: req.params.id });
       fs.unlinkSync(`./public/uploads/${ad.photo}`);
       return res.json({ message: 'Ad deleted', deletedAd: ad });
     }
-    res.status(404).json({ message: 'Not found' });
+    return res.status(404).json({ message: 'Not found' });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
