@@ -1,0 +1,30 @@
+.img {
+  object-fit: cover;
+  max-width: 380px;
+  min-height: 280px;
+
+  -webkit-box-shadow: -3px 7px 13px -37px rgb(72, 75, 110);
+  -moz-box-shadow: -3px 7px 13px -37px rgba(66, 68, 90, 1);
+  box-shadow: -3px 7px 13px -37px rgba(66, 68, 90, 1);
+}
+
+.localization {
+  margin-top: 0.5rem;
+  font-style: italic;
+  font-size: 25px;
+}
+
+.price {
+  font-size: 30px;
+}
+
+.title {
+  font-size: 30px;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+}

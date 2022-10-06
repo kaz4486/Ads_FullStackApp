@@ -1,0 +1,42 @@
+.section_left {
+  display: flex;
+  justify-content: flex-end;
+
+  .img {
+    object-fit: cover;
+    max-width: 480px;
+    max-height: 550px;
+    padding: 0 10px 0 10px;
+    align-content: center;
+  }
+}
+
+.section_right {
+  align-items: center;
+  display: flex;
+  flex-flow: column;
+  span {
+    font-weight: bold;
+  }
+}
+
+.title {
+  text-align: center;
+  margin: 20px 0 20px 0;
+}
+
+.user {
+  display: flex;
+  justify-content: center;
+  span {
+    font-weight: bold;
+  }
+}
+
+.avatar_frame {
+  .avatar {
+    max-width: 90px;
+    max-height: 70x;
+    border-radius: 50%;
+  }
+}

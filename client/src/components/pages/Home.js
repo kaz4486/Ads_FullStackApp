@@ -1,5 +1,5 @@
 import { Container } from 'react-bootstrap';
-import AdSummary from '../common/AdSummary';
+import Ads from '../features/Ads/Ads';
 
 const Home = () => {
   // search
@@ -7,8 +7,8 @@ const Home = () => {
 
   return (
     <Container>
-      <h1>blaHome</h1>
-      <AdSummary />
+      <h1 className='m-3'>All ads</h1>
+      <Ads />
     </Container>
   );
 };

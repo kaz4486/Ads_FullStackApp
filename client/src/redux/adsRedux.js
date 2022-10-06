@@ -1,22 +1,122 @@
-//selectors
+import { API_URL } from '../config';
+import axios from 'axios';
 
+//selectors
+export const getAds = ({ ads }) => ads.data;
+
+export const getAdById = ({ ads }, adId) =>
+  ads.data.find((ad) => ad._id === adId);
+
+export const getRequest = ({ ads }) => ads.request;
 /* ACTIONS */
 
 //actions
 const reducerName = 'ads';
+// eslint-disable-next-line no-unused-vars
 const createActionName = (actionName) => `app/${reducerName}/${actionName}`;
+
+const START_REQUEST = createActionName('START_REQUEST');
+const END_REQUEST = createActionName('END_REQUEST');
+const ERROR_REQUEST = createActionName('ERROR_REQUEST');
+
+const LOAD_ADS = createActionName('LOAD_ADS');
+const CREATE_AD = createActionName('CREATE_AD');
+const EDIT_AD = createActionName('EDIT_AD');
+
+export const startRequest = () => ({ type: START_REQUEST });
+export const endRequest = () => ({ type: END_REQUEST });
+export const errorRequest = () => ({ type: ERROR_REQUEST });
+
+export const loadAds = (payload) => ({ payload, type: LOAD_ADS });
+export const createAd = (payload) => ({ payload, type: CREATE_AD });
+export const editAd = (payload) => ({ payload, type: EDIT_AD });
+/* THUNKS */
+
+export const createAddRequest = (data) => {
+  return async (dispatch) => {
+    dispatch(startRequest({ name: CREATE_AD })); //po co to name?
+    try {
+      let res = await axios.post(`${API_URL}/ads`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      dispatch(createAd(res.data));
+      dispatch(endRequest({ name: CREATE_AD }));
+    } catch (e) {
+      dispatch(errorRequest({ name: CREATE_AD, error: e.message }));
+    }
+  };
+};
+
+export const loadAdsRequest = () => {
+  return async (dispatch) => {
+    dispatch(startRequest());
+    try {
+      let res = await axios.get(`${API_URL}/ads`);
+
+      dispatch(loadAds(res.data));
+      dispatch(endRequest());
+    } catch (e) {
+      dispatch(errorRequest(e.message));
+    }
+  };
+};
+
+export const editAddRequest = (data, id) => {
+  return async (dispatch) => {
+    dispatch(startRequest({ name: EDIT_AD })); //po co to name?
+    try {
+      let res = await axios.put(`${API_URL}/ads/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      dispatch(editAd(res.data));
+      dispatch(endRequest({ name: EDIT_AD }));
+    } catch (e) {
+      dispatch(errorRequest({ name: EDIT_AD, error: e.message }));
+    }
+  };
+};
 
 /* INITIAL STATE */
 
 const initialState = {
   data: [],
-  requests: {},
+  request: { pending: false, error: null, success: null },
 };
 
 /* REDUCER */
 
 export default function adsReducer(statePart = initialState, action = {}) {
   switch (action.type) {
+    case LOAD_ADS:
+      return { ...statePart, data: [...action.payload] };
+    case CREATE_AD:
+      return { ...statePart, data: [...statePart.data, action.payload] };
+    case EDIT_AD:
+      return {
+        ...statePart,
+        data: [
+          statePart.data.map((ad) =>
+            ad.id === action.payload.id ? { ...ad, ...action.payload } : ad
+          ),
+        ],
+      };
+    case START_REQUEST:
+      return {
+        ...statePart,
+        request: { pending: true, error: null, success: false },
+      };
+    case END_REQUEST:
+      return {
+        ...statePart,
+        request: { pending: false, error: null, success: true },
+      };
+    case ERROR_REQUEST:
+      return {
+        ...statePart,
+        request: { pending: false, error: action.error, success: false },
+      };
     default:
       return statePart;
   }
