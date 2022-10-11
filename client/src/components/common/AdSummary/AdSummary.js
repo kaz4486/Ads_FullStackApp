@@ -1,4 +1,4 @@
-import { Container, Button, Card } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { IMGS_URL } from '../../../config';
 import { Link } from 'react-router-dom';
 import styles from './AdSummary.module.scss';

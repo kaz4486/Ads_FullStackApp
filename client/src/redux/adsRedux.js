@@ -4,8 +4,10 @@ import axios from 'axios';
 //selectors
 export const getAds = ({ ads }) => ads.data;
 
-export const getAdById = ({ ads }, adId) =>
-  ads.data.find((ad) => ad._id === adId);
+export const getAdById = ({ ads }, adId) => {
+  // console.log(ads); // dlaczego X8?
+  return ads.data.find((ad) => ad._id === adId);
+};
 
 export const getRequest = ({ ads }) => ads.request;
 /* ACTIONS */
@@ -62,13 +64,18 @@ export const loadAdsRequest = () => {
   };
 };
 
-export const editAddRequest = (data, id) => {
+export const editAdRequest = (data, id) => {
   return async (dispatch) => {
     dispatch(startRequest({ name: EDIT_AD })); //po co to name?
     try {
-      let res = await axios.put(`${API_URL}/ads/${id}`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      let res = await axios.put(
+        `${API_URL}/ads/${id}`,
+        data,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        },
+        { withCredentials: true }
+      );
 
       dispatch(editAd(res.data));
       dispatch(endRequest({ name: EDIT_AD }));
@@ -98,7 +105,7 @@ export default function adsReducer(statePart = initialState, action = {}) {
         ...statePart,
         data: [
           statePart.data.map((ad) =>
-            ad.id === action.payload.id ? { ...ad, ...action.payload } : ad
+            ad._id === action.payload._id ? { ...ad, ...action.payload } : ad
           ),
         ],
       };

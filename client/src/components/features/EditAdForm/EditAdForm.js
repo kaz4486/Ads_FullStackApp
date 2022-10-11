@@ -1,22 +1,26 @@
 import { useDispatch } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { editAddRequest, getAdById } from '../../../redux/adsRedux';
+import { editAdRequest, getAdById } from '../../../redux/adsRedux';
 import AdForm from '../../common/AdForm/AdForm';
 
 const EditAdForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+  console.log('dupa', id);
   const ad = useSelector((state) => getAdById(state, id));
+  console.log(ad);
 
   const handleSubmit = (ad) => {
-    dispatch(editAddRequest(...ad, id));
+    console.log(ad);
+
+    dispatch(editAdRequest({ ...ad }, id));
     navigate('/');
   };
   if (!ad) {
-    return <Navigate to='/' />;
+    return <p>Problem</p>;
   }
 
   return (
@@ -29,6 +33,7 @@ const EditAdForm = () => {
       photo={ad.photo}
       price={ad.price}
       localization={ad.localization}
+      _id={ad._id}
     />
   );
 };

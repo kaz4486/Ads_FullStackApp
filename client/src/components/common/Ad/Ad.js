@@ -15,12 +15,11 @@ const Ad = () => {
   const { id } = useParams();
   const ad = useSelector((state) => getAdById(state, id));
   const user = useSelector(getUser);
-  console.log(user); // dlaczego 4 razy?
+  // console.log(user); // dlaczego 4 razy?
   const request = useSelector(getRequest);
 
   useEffect(() => {
     dispatch(loadAdsRequest());
-    dispatch(loadUserRequest());
   }, [dispatch]);
 
   // ad long version
