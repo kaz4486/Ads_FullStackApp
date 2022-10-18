@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { editAdRequest, getAdById } from '../../../redux/adsRedux';
 import AdForm from '../../common/AdForm/AdForm';
+import { Progress } from 'reactstrap';
 
 const EditAdForm = () => {
   const dispatch = useDispatch();
@@ -18,8 +19,11 @@ const EditAdForm = () => {
     }, 1000);
   };
   if (!ad) {
-    return <p>Problem</p>;
+    return <Progress animated color='primary' value={50} />;
   }
+
+  // if (request.pending) return <Progress animated color='primary' value={50} />;
+  // if (request.error) return <Alert color='warning'>{request.error}</Alert>;
 
   return (
     <AdForm

@@ -86,11 +86,9 @@ exports.put = async (req, res) => {
     const user = await User.findOne({ login: req.session.user.login });
     console.log(ad.sellerInfo, user._id);
     if (ad.sellerInfo != user._id && !req.file) {
-      console.log('tu');
       return res.status(400).send({ message: 'Bad request' });
     }
     if (ad.sellerInfo != user._id && req.file) {
-      console.log('ze zdjęciem');
       fs.unlinkSync(`./public/uploads/${req.file.filename}`);
       console.log('atu?');
       return res.status(400).send({ message: 'Bad request' });
@@ -121,10 +119,10 @@ exports.put = async (req, res) => {
           },
           { new: true }
         );
-        console.log(ad.photo);
         fs.unlinkSync(`./public/uploads/${ad.photo}`);
       }
       if (!req.file) {
+        console.log('tu');
         newAd = await Ad.findOneAndUpdate(
           { _id: req.params.id },
           {

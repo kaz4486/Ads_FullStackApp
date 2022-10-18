@@ -34,12 +34,7 @@ const db = mongoose.connection;
 //   next();
 // });
 
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -49,9 +44,10 @@ app.use(
     secret: SECRET,
     store: MongoStore.create({
       mongoUrl: connectionString,
-      resave: false,
-      saveUninitialized: false,
+      collection: 'sessions',
     }),
+    resave: false,
+    saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV == 'production',
     },
