@@ -5,14 +5,16 @@ const fs = require('fs');
 const isString = require('../utils/validators/isString');
 
 exports.registration = async (req, res) => {
-  const { login, password, phoneNumber } = req.body;
+  const { login, password, phone } = req.body;
+  console.log(login, password, phone);
+  console.log(req.file);
   const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
 
   try {
     if (
       isString(login) &&
       isString(password) &&
-      isString(phoneNumber) &&
+      isString(phone) &&
       req.file &&
       ['image/png', 'image/jpeg', 'image/gif'].includes(fileType)
     ) {
@@ -26,7 +28,7 @@ exports.registration = async (req, res) => {
       const user = await User.create({
         login,
         password: await bcrypt.hash(password, 10),
-        phoneNumber,
+        phoneNumber: phone,
         avatar: req.file.filename,
       });
       return res

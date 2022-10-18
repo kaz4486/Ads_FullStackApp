@@ -9,15 +9,13 @@ const EditAdForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log('dupa', id);
   const ad = useSelector((state) => getAdById(state, id));
-  console.log(ad);
 
   const handleSubmit = (ad) => {
-    console.log(ad);
-
-    dispatch(editAdRequest({ ...ad }, id));
-    navigate('/');
+    dispatch(editAdRequest(ad, id));
+    setTimeout(() => {
+      return navigate('/');
+    }, 1000);
   };
   if (!ad) {
     return <p>Problem</p>;

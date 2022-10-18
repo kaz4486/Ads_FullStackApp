@@ -28,6 +28,8 @@
 .user {
   display: flex;
   justify-content: center;
+  margin: 3em;
+  align-items: center;
   span {
     font-weight: bold;
   }
@@ -38,5 +40,30 @@
     max-width: 90px;
     max-height: 70x;
     border-radius: 50%;
+  }
+}
+
+@media (min-width: 770px) and (max-width: 1200px) {
+  .section_left {
+    justify-content: center;
+  }
+
+  .user {
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+@media (max-width: 530px) {
+  .section_left {
+    justify-content: center;
+    .img {
+      max-width: 300px;
+      max-height: 350px;
+    }
+  }
+  .user {
+    justify-content: space-around;
+    align-items: center;
   }
 }

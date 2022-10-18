@@ -1,1 +1,17 @@
+.icon_col {
+  text-align: end;
+  align-self: center;
+}
 
+@media (max-width: 770px) {
+  .icon_col {
+    text-align: center;
+  }
+  .inputSearch {
+    text-align: center;
+  }
+  .buttonSearch {
+    text-align: center;
+    margin-top: 10px;
+  }
+}

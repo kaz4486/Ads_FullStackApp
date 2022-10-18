@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   Button,
   Collapse,
@@ -6,11 +9,15 @@ import {
   NavbarToggler,
   Nav,
   NavItem,
-  NavLink,
 } from 'reactstrap';
+import { getUser } from '../../../redux/usersRedux';
+import styles from '../Header/Header.module.scss';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const user = useSelector((state) => getUser(state));
+  console.log(user);
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -21,34 +28,56 @@ const Header = () => {
       <Navbar color='dark' dark expand='md'>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
-          <Nav className='ml-auto align-items-center' navbar>
-            <NavItem>
-              <NavLink href='/'>Home</NavLink>
-            </NavItem>
-            {/* gdy jest zalogowana*/}
-            <NavItem>
-              <NavLink href='/logout'>
-                <Button outline color='danger'>
-                  Sing out
-                </Button>
-              </NavLink>
-            </NavItem>
-            {/*gdy nie jest zalogowana */}
-            <NavItem>
-              <NavLink href='/register'>
-                <Button outline color='primary'>
-                  Sign Up
-                </Button>
-              </NavLink>
-            </NavItem>
-            {/*gdy nie jest zalogowana */}
-            <NavItem>
-              <NavLink href='/login'>
-                <Button outline color='primary'>
-                  Sign In
-                </Button>
-              </NavLink>
-            </NavItem>
+          <Nav className={styles.navbar} navbar>
+            <Col>
+              <NavItem>
+                <Link to='/' className={styles.home}>
+                  Home
+                </Link>
+              </NavItem>
+            </Col>
+            <Col className='d-flex justify-content-end '>
+              {user !== null && (
+                <NavItem>
+                  <Link to='/logout'>
+                    <Button outline color='danger' className={styles.buttons}>
+                      Sing out
+                    </Button>
+                  </Link>
+                </NavItem>
+              )}
+
+              {user == null && (
+                <Row className='align-items-center'>
+                  <Col>
+                    <NavItem>
+                      <Link to='/register'>
+                        <Button
+                          outline
+                          color='primary'
+                          className={styles.buttons}
+                        >
+                          Sign Up
+                        </Button>
+                      </Link>
+                    </NavItem>
+                  </Col>
+                  <Col>
+                    <NavItem>
+                      <Link to='/login'>
+                        <Button
+                          outline
+                          color='primary'
+                          className={styles.buttons}
+                        >
+                          Sign In
+                        </Button>
+                      </Link>
+                    </NavItem>
+                  </Col>
+                </Row>
+              )}
+            </Col>
           </Nav>
         </Collapse>
       </Navbar>

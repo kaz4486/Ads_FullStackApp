@@ -1,22 +1,46 @@
 import { Alert, Progress } from 'reactstrap';
 import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
-import { useParams, Navigate, Link } from 'react-router-dom';
+import { useParams, Navigate, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { getAdById, getRequest } from '../../../redux/adsRedux';
-import { IMGS_URL } from '../../../config';
+import {
+  getAdById,
+  getRequest,
+  removeAdRequest,
+} from '../../../redux/adsRedux';
+import { IMGS_URL } from '../../../configs/config';
 import styles from './Ad.module.scss';
 import { loadAdsRequest } from '../../../redux/adsRedux';
-import { getUser, loadUserRequest } from '../../../redux/usersRedux';
+import { getUser } from '../../../redux/usersRedux';
 import clsx from 'clsx';
 
 const Ad = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
   const ad = useSelector((state) => getAdById(state, id));
-  const user = useSelector(getUser);
-  // console.log(user); // dlaczego 4 razy?
+  const user = useSelector((state) => getUser(state));
   const request = useSelector(getRequest);
+
+  const [show, setShow] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
+
+  useEffect(() => {
+    if (ad?.sellerInfo.login === user?.login) {
+      setShowButtons(true);
+    }
+  }, [ad, user]);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleClickRemove = () => {
+    handleClose();
+    dispatch(removeAdRequest(ad._id));
+    setTimeout(() => {
+      return navigate('/');
+    }, 500);
+  };
 
   useEffect(() => {
     dispatch(loadAdsRequest());
@@ -39,7 +63,7 @@ const Ad = () => {
             <article>
               <h2 className={styles.title}>{ad.title}</h2>
               <Row>
-                <Col xs={12} sm={6} className='align-self-center'>
+                <Col lg={6} className='align-self-center'>
                   <div className={styles.section_left}>
                     <img
                       src={`${IMGS_URL}/${ad.photo}`}
@@ -48,7 +72,7 @@ const Ad = () => {
                     />
                   </div>
                 </Col>
-                <Col xs={12} sm={6} className='align-self-center'>
+                <Col lg={6} className='align-self-center'>
                   <div className={styles.section_right}>
                     <p>
                       Localization: <span>{ad.localization}</span>
@@ -56,7 +80,7 @@ const Ad = () => {
                     <p>
                       Price: <span>{ad.price}$ </span>
                     </p>
-                    <p>{ad.content} </p>
+                    <p dangerouslySetInnerHTML={{ __html: ad.content }} />
                     <p>
                       Opublikowano: <span>{ad.publicationDate}</span>
                     </p>
@@ -64,7 +88,7 @@ const Ad = () => {
                 </Col>
               </Row>
               <Row>
-                <Col md={6}>
+                <Col xs={12} lg={6}>
                   <section className={styles.user}>
                     <Col md={3}>
                       <div className={styles.avatar_frame}>
@@ -85,21 +109,48 @@ const Ad = () => {
                     </Col>
                   </section>
                 </Col>
-                <Col
-                  md={6}
-                  className={clsx(
-                    'd-flex',
-                    'justify-content-center',
-                    'align-items-center'
-                  )}
-                >
-                  <Link to={`/ads/edit/${ad._id}`} className='mx-2'>
-                    <Button variant='secondary'>Edit</Button>
-                  </Link>
-                  <Link to={'/'} className='mx-2'>
-                    <Button variant='danger'>Delete</Button>
-                  </Link>
-                </Col>
+
+                {showButtons && (
+                  <Col
+                    md={6}
+                    className={clsx(
+                      'd-flex',
+                      'justify-content-center',
+                      'align-items-center'
+                    )}
+                  >
+                    <Row>
+                      <Col>
+                        <Link to={`/ads/edit/${ad._id}`} className='mx-2'>
+                          <Button variant='secondary'>Edit</Button>
+                        </Link>
+                      </Col>
+                      <Col>
+                        <Button variant='danger' onClick={handleShow}>
+                          Delete
+                        </Button>
+                      </Col>
+                    </Row>
+
+                    <Modal show={show} onHide={handleClose}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Are you sure?</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        This operation will completely remove this ad from the
+                        app. Are you sure you want to do that?
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant='secondary' onClick={handleClose}>
+                          Cancel
+                        </Button>
+                        <Button variant='danger' onClick={handleClickRemove}>
+                          Remove
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </Col>
+                )}
               </Row>
             </article>
           </Col>

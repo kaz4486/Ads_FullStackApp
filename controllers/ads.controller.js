@@ -28,9 +28,9 @@ exports.getById = async (req, res) => {
 exports.getBySearchPhrase = async (req, res) => {
   try {
     const pattern = req.params.searchPhrase;
-    const ad = await Ad.find({ title: { $regex: pattern } }).populate(
-      'sellerInfo'
-    );
+    const ad = await Ad.find({
+      title: { $regex: pattern, $options: 'i' },
+    }).populate('sellerInfo');
     if (ad.length > 0) return res.json(ad);
     return res.status(404).json({ message: 'Not found' });
   } catch (err) {
@@ -43,6 +43,7 @@ exports.post = async (req, res) => {
   const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
   try {
     const user = await User.findOne({ login: req.session.user.login });
+    console.log(user._id);
     if (!user) {
       fs.unlinkSync(`./public/uploads/${req.file.filename}`);
       return res.status(400).send({ message: 'Bad request' });
@@ -77,13 +78,21 @@ exports.post = async (req, res) => {
 };
 
 exports.put = async (req, res) => {
+  console.log(req.body);
   const { title, content, publicationDate, price, localization } = req.body;
   const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
   try {
     const ad = await Ad.findOne({ _id: req.params.id });
     const user = await User.findOne({ login: req.session.user.login });
-    if (ad.sellerInfo != user._id) {
+    console.log(ad.sellerInfo, user._id);
+    if (ad.sellerInfo != user._id && !req.file) {
+      console.log('tu');
+      return res.status(400).send({ message: 'Bad request' });
+    }
+    if (ad.sellerInfo != user._id && req.file) {
+      console.log('ze zdjęciem');
       fs.unlinkSync(`./public/uploads/${req.file.filename}`);
+      console.log('atu?');
       return res.status(400).send({ message: 'Bad request' });
     }
     if (
@@ -112,6 +121,7 @@ exports.put = async (req, res) => {
           },
           { new: true }
         );
+        console.log(ad.photo);
         fs.unlinkSync(`./public/uploads/${ad.photo}`);
       }
       if (!req.file) {
@@ -150,7 +160,9 @@ exports.delete = async (req, res) => {
     }
     if (ad) {
       await Ad.deleteOne({ _id: req.params.id });
+      console.log(ad.photo);
       fs.unlinkSync(`./public/uploads/${ad.photo}`);
+      console.log('tam');
       return res.json({ message: 'Ad deleted', deletedAd: ad });
     }
     return res.status(404).json({ message: 'Not found' });

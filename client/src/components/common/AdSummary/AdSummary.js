@@ -1,5 +1,5 @@
 import { Button, Card } from 'react-bootstrap';
-import { IMGS_URL } from '../../../config';
+import { IMGS_URL } from '../../../configs/config';
 import { Link } from 'react-router-dom';
 import styles from './AdSummary.module.scss';
 

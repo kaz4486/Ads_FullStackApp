@@ -10,7 +10,9 @@ const CreateAdForm = () => {
   const handleSubmit = (ad) => {
     console.log(ad);
     dispatch(createAddRequest(ad));
-    navigate('/');
+    setTimeout(() => {
+      return navigate('/');
+    }, 500);
   };
   return <AdForm action={handleSubmit} actionText='Create Ad' />;
 };

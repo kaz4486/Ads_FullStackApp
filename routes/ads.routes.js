@@ -17,6 +17,7 @@ router.post(
 );
 
 router.delete('/ads/:id', authMiddleware, AdsController.delete);
+// authMiddleware
 
 router.put(
   '/ads/:id',

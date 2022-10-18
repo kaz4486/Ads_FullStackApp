@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { Alert, Button, Spinner } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
-
 import { useDispatch } from 'react-redux';
-import { logIn } from '../../redux/usersRedux';
-// import { useNavigate } from 'react-router-dom';
+import { logIn } from '../../../redux/usersRedux';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +22,7 @@ const Login = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ login, password }),
+      credentials: 'include',
     };
     setStatus('loading');
     fetch(`http://localhost:8000/auth/login`, options)
@@ -30,9 +30,9 @@ const Login = () => {
         if (res.status === 200) {
           setStatus('success');
           dispatch(logIn({ login }));
-          // setTimeout(() => {
-          //   return navigate('/');
-          // }, 2000);
+          setTimeout(() => {
+            return navigate('/');
+          }, 2000);
         } else if (res.status === 400) {
           setStatus('clientError');
         } else {
