@@ -29,6 +29,11 @@ mongoose.connect(connectionString, {
 });
 const db = mongoose.connection;
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 if (process.env.NODE_ENV !== 'production') {
   app.use(
     cors({
