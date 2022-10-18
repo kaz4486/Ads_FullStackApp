@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Alert, Button, Spinner } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
+import { AUTH_URL } from '../../../configs/config';
 
 const Register = () => {
   const [login, setLogin] = useState('');
@@ -25,7 +26,7 @@ const Register = () => {
     };
 
     setStatus('loading');
-    fetch(`http://localhost:8000/auth/register`, options).then((res) => {
+    fetch(`${AUTH_URL}/register`, options).then((res) => {
       if (res.status === 201) {
         setStatus('success');
       } else if (res.status === 400) {

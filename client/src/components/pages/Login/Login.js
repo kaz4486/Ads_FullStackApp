@@ -4,6 +4,7 @@ import { Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { logIn } from '../../../redux/usersRedux';
 import { useNavigate } from 'react-router-dom';
+import { AUTH_URL } from '../../../configs/config';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const Login = () => {
       credentials: 'include',
     };
     setStatus('loading');
-    fetch(`http://localhost:8000/auth/login`, options)
+    fetch(`${AUTH_URL}/login`, options)
       .then((res) => {
         if (res.status === 200) {
           setStatus('success');

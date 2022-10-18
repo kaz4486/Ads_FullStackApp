@@ -17,7 +17,6 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const user = useSelector((state) => getUser(state));
-  console.log(user);
 
   const toggle = () => {
     setIsOpen(!isOpen);
