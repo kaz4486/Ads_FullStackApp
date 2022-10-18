@@ -1,6 +1,7 @@
 // import { Col, Container, Row, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import { Alert } from 'react-bootstrap';
+import { AUTH_URL } from '../../../configs/config';
 import CreateAdForm from '../../features/CreateAdForm/CreateAdForm';
 
 const AdCreate = () => {
@@ -11,7 +12,7 @@ const AdCreate = () => {
     credentials: 'include',
   };
 
-  fetch(`http://localhost:8000/auth/user`, options)
+  fetch(`${AUTH_URL}/user`, options)
     .then((res) => {
       if (res.status === 200) {
         setUser(true);

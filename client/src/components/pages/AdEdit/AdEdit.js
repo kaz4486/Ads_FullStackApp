@@ -1,6 +1,7 @@
 import { Alert } from 'react-bootstrap';
 import EditAdForm from '../../features/EditAdForm/EditAdForm';
 import { useState } from 'react';
+import { AUTH_URL } from '../../../configs/config';
 
 const AdEdit = () => {
   const [user, setUser] = useState(false);
@@ -10,7 +11,7 @@ const AdEdit = () => {
     credentials: 'include',
   };
 
-  fetch(`http://localhost:8000/auth/user`, options)
+  fetch(`${AUTH_URL}/user`, options)
     .then((res) => {
       console.log(res.session);
       if (res.status === 200) {
