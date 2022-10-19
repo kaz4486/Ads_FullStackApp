@@ -14,9 +14,10 @@ const NODE_ENV = process.env.NODE_ENV;
 const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
 const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
 const SECRET = process.env.SECRET;
+
 let dbUri = ''; //??
 
-if (NODE_ENV === 'production') dbUri = 'url to remote db';
+if (NODE_ENV === 'production') dbUri = connectionString;
 else if (NODE_ENV === 'test')
   dbUri = 'mongodb://localhost:27017/Ads_FullStackAppDBtest';
 else dbUri = 'mongodb://localhost:27017/Ads_FullStackAppDB';
@@ -34,7 +35,12 @@ const db = mongoose.connection;
 //   next();
 // });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'http://localhost:8000'],
+    credentials: true,
+  })
+);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -42,18 +48,17 @@ app.use(express.json());
 app.use(
   session({
     secret: SECRET,
+    resave: false,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: connectionString,
       collection: 'sessions',
     }),
-    resave: false,
-    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV == 'production',
+    },
   })
 );
-
-// cookie: {
-//   secure: process.env.NODE_ENV == 'production',
-// },
 
 const adsRoutes = require('./routes/ads.routes');
 const authRoutes = require('./routes/auth.routes');

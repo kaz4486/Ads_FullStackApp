@@ -2,6 +2,7 @@ import { logOut } from '../../../redux/usersRedux';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AUTH_URL } from '../../../configs/config';
 
 const Logout = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const Logout = () => {
       credentials: 'include',
     };
 
-    fetch(`http://localhost:8000/auth/logout`, options).then(() => {
+    fetch(`${AUTH_URL}/logout`, options).then(() => {
       dispatch(logOut());
       setTimeout(() => {
         return navigate('/');
