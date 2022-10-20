@@ -8,7 +8,6 @@ const CreateAdForm = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (ad) => {
-    console.log(ad);
     dispatch(createAddRequest(ad));
     setTimeout(() => {
       return navigate('/');

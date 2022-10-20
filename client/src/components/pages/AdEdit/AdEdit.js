@@ -13,7 +13,6 @@ const AdEdit = () => {
 
   fetch(`${AUTH_URL}/user`, options)
     .then((res) => {
-      console.log(res.session);
       if (res.status === 200) {
         setUser(true);
       }
@@ -22,7 +21,6 @@ const AdEdit = () => {
       setUser('serverError');
     });
 
-  console.log(user);
   if (!user)
     return (
       <Alert color='warning' className='mt-2'>

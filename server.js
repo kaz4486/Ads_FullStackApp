@@ -15,13 +15,6 @@ const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
 const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
 const SECRET = process.env.SECRET;
 
-let dbUri = ''; //??
-
-if (NODE_ENV === 'production') dbUri = connectionString;
-else if (NODE_ENV === 'test')
-  dbUri = 'mongodb://localhost:27017/Ads_FullStackAppDBtest';
-else dbUri = 'mongodb://localhost:27017/Ads_FullStackAppDB';
-
 connectionString = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.telw8lc.mongodb.net/Ads_FullStackAppDB?retryWrites=true&w=majority`;
 
 mongoose.connect(connectionString, {
@@ -37,6 +30,11 @@ const db = mongoose.connection;
 
 app.use(
   cors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:8000',
+      'https://lit-wave-35985.herokuapp.com',
+    ],
     credentials: true,
   })
 );

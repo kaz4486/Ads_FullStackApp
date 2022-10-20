@@ -39,7 +39,7 @@ const Ad = () => {
     dispatch(removeAdRequest(ad._id));
     setTimeout(() => {
       return navigate('/');
-    }, 500);
+    }, 1000);
   };
 
   useEffect(() => {
