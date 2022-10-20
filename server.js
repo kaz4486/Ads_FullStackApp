@@ -37,11 +37,6 @@ const db = mongoose.connection;
 
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:8000',
-      'https://lit-wave-35985.herokuapp.com',
-    ],
     credentials: true,
   })
 );
