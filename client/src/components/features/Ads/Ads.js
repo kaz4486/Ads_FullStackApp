@@ -21,7 +21,6 @@ const Ads = () => {
   useEffect(() => {
     dispatch(loadAdsRequest());
   }, [dispatch]);
-  // co to dokładnie znaczy?
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();

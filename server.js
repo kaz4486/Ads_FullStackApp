@@ -42,11 +42,12 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+app.set('trust proxy', 1);
 app.use(
   session({
     secret: SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: connectionString,
       collection: 'sessions',
