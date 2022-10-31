@@ -109,7 +109,7 @@ export const removeAdRequest = (id) => {
   return async (dispatch) => {
     dispatch(startRequest({ name: EDIT_AD })); //po co to name?
     try {
-      let res = await axios.delete(
+      await axios.delete(
         `${API_URL}/ads/${id}`,
         { withCredentials: true },
         {

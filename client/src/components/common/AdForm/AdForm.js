@@ -3,8 +3,12 @@ import { Form, Col } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useForm } from 'react-hook-form';
+import removeTags from '../../../utils/removeTags';
 
 const AdForm = ({ action, actionText, ...props }) => {
+  const [contentError, setContentError] = useState(false);
+
   const [title, setTitle] = useState(props.title || '');
   const [content, setContent] = useState(props.content || '');
   const [localization, setLocalization] = useState(props.localization || '');
@@ -14,32 +18,52 @@ const AdForm = ({ action, actionText, ...props }) => {
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
   const publicationDate = today.toLocaleDateString(); // "6/14/2020"
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    const fd = new FormData();
-    fd.append('title', title);
-    fd.append('content', content);
-    fd.append('localization', localization);
-    fd.append('price', price);
-    fd.append('photo', photo);
-    fd.append('publicationDate', publicationDate);
-    action(fd);
-    // for (const pair of fd.entries()) {
-    //   console.log(pair[0] + '-' + pair[1]);
-    // }
+  const handleSubmit = (e) => {
+    if (removeTags(content).length < 20 || removeTags(content).length > 100) {
+      setContentError(true);
+    } else {
+      setContentError(false);
+      const fd = new FormData();
+      fd.append('title', title);
+      fd.append('content', content);
+      fd.append('localization', localization);
+      fd.append('price', price);
+      fd.append('photo', photo);
+      fd.append('publicationDate', publicationDate);
+      action(fd);
+      // for (const pair of fd.entries()) {
+      //   console.log(pair[0] + '-' + pair[1]);
+      // }
+    }
   };
 
+  const {
+    register,
+    handleSubmit: validate,
+    formState: { errors },
+  } = useForm();
+
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={validate(handleSubmit)}>
       <Form.Group controlId='formTitle'>
         <Form.Label>Title</Form.Label>
         <Form.Control
+          {...register('title', {
+            required: true,
+            minLength: 10,
+            maxLength: 50,
+          })}
           type='text'
           placeholder='type your title...'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        {errors.title && (
+          <small className='d-block form-text text-danger mt-2'>
+            This field is required, minimum 10 signs, max 50 signs
+          </small>
+        )}
       </Form.Group>
       <Form.Group controlId='formContent'>
         <Form.Label>Content</Form.Label>
@@ -49,6 +73,11 @@ const AdForm = ({ action, actionText, ...props }) => {
           value={content}
           onChange={setContent}
         />
+        {contentError && (
+          <small className='d-block form-text text-danger mt-2'>
+            This field is required, minimum 20 signs, max 100 signs
+          </small>
+        )}
       </Form.Group>
       <Form.Group controlId='formLocalization'>
         <Form.Label>Localization</Form.Label>

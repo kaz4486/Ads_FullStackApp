@@ -43,7 +43,6 @@ exports.post = async (req, res) => {
   const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
   try {
     const user = await User.findOne({ login: req.session.user.login });
-    console.log(user._id);
     if (!user) {
       fs.unlinkSync(`./public/uploads/${req.file.filename}`);
       return res.status(400).send({ message: 'Bad request' });
@@ -158,9 +157,7 @@ exports.delete = async (req, res) => {
     }
     if (ad) {
       await Ad.deleteOne({ _id: req.params.id });
-      console.log(ad.photo);
       fs.unlinkSync(`./public/uploads/${ad.photo}`);
-      console.log('tam');
       return res.json({ message: 'Ad deleted', deletedAd: ad });
     }
     return res.status(404).json({ message: 'Not found' });

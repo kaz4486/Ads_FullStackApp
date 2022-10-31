@@ -1,9 +1,5 @@
-// import { Col, Container, Row, Button } from 'react-bootstrap';
-import { useState } from 'react';
 import { Alert } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { Progress } from 'reactstrap';
-import { AUTH_URL } from '../../../configs/config';
+import { useSelector } from 'react-redux';
 import { getUser } from '../../../redux/usersRedux';
 import CreateAdForm from '../../features/CreateAdForm/CreateAdForm';
 
