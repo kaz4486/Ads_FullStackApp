@@ -77,19 +77,16 @@ exports.post = async (req, res) => {
 };
 
 exports.put = async (req, res) => {
-  console.log(req.body);
   const { title, content, publicationDate, price, localization } = req.body;
   const fileType = req.file ? await getImageFileType(req.file) : 'unknown';
   try {
     const ad = await Ad.findOne({ _id: req.params.id });
     const user = await User.findOne({ login: req.session.user.login });
-    console.log(ad.sellerInfo, user._id);
     if (ad.sellerInfo != user._id && !req.file) {
       return res.status(400).send({ message: 'Bad request' });
     }
     if (ad.sellerInfo != user._id && req.file) {
       fs.unlinkSync(`./public/uploads/${req.file.filename}`);
-      console.log('atu?');
       return res.status(400).send({ message: 'Bad request' });
     }
     if (
@@ -121,7 +118,6 @@ exports.put = async (req, res) => {
         fs.unlinkSync(`./public/uploads/${ad.photo}`);
       }
       if (!req.file) {
-        console.log('tu');
         newAd = await Ad.findOneAndUpdate(
           { _id: req.params.id },
           {

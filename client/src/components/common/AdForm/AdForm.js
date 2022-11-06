@@ -8,6 +8,9 @@ import removeTags from '../../../utils/removeTags';
 
 const AdForm = ({ action, actionText, ...props }) => {
   const [contentError, setContentError] = useState(false);
+  const [photoError, setPhotoError] = useState(false);
+
+  const disabledSubmit = photoError;
 
   const [title, setTitle] = useState(props.title || '');
   const [content, setContent] = useState(props.content || '');
@@ -20,7 +23,7 @@ const AdForm = ({ action, actionText, ...props }) => {
   const publicationDate = today.toLocaleDateString(); // "6/14/2020"
 
   const handleSubmit = (e) => {
-    if (removeTags(content).length < 20 || removeTags(content).length > 100) {
+    if (removeTags(content).length < 20 || removeTags(content).length > 500) {
       setContentError(true);
     } else {
       setContentError(false);
@@ -35,6 +38,15 @@ const AdForm = ({ action, actionText, ...props }) => {
       // for (const pair of fd.entries()) {
       //   console.log(pair[0] + '-' + pair[1]);
       // }
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setPhotoError(false);
+    if (e.target.files.length > 0 && e.target.files[0].size < 1000000) {
+      setPhoto(e.target.files[0]);
+    } else {
+      setPhotoError(true);
     }
   };
 
@@ -75,7 +87,7 @@ const AdForm = ({ action, actionText, ...props }) => {
         />
         {contentError && (
           <small className='d-block form-text text-danger mt-2'>
-            This field is required, minimum 20 signs, max 100 signs
+            This field is required, minimum 20 signs, max 500 signs
           </small>
         )}
       </Form.Group>
@@ -100,13 +112,20 @@ const AdForm = ({ action, actionText, ...props }) => {
       <Col xs='12' md='6' className='order-1 order-md-2'>
         <Form.Group controlId='formAvatar'>
           <Form.Label>Avatar:</Form.Label>
-          <Form.Control
-            type='file'
-            onChange={(e) => setPhoto(e.target.files[0])}
-          ></Form.Control>
+          <Form.Control type='file' onChange={handleFileChange}></Form.Control>
+          {photoError && (
+            <small className='d-block form-text text-danger mt-2'>
+              This field is required and maximum size is 1mb
+            </small>
+          )}
         </Form.Group>
       </Col>
-      <Button variant='primary' type='submit' className='mt-2'>
+      <Button
+        variant='primary'
+        type='submit'
+        className='mt-2'
+        disabled={disabledSubmit}
+      >
         {actionText}
       </Button>
     </Form>
