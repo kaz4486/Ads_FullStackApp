@@ -37,6 +37,7 @@ export const removeAd = (payload) => ({ payload, type: REMOVE_AD });
 /* THUNKS */
 
 export const createAddRequest = (data) => {
+  console.log(data)
   return async (dispatch) => {
     dispatch(startRequest({ name: CREATE_AD })); //po co to name?
     try {

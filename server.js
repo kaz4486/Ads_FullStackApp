@@ -32,6 +32,7 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:3001',
       'http://localhost:8000',
       'https://lit-wave-35985.herokuapp.com',
     ],
@@ -69,7 +70,7 @@ app.use('/auth', authRoutes);
 app.use(express.static(path.join(__dirname, '/client/build')));
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
 

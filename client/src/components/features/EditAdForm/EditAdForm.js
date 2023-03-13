@@ -29,7 +29,7 @@ const EditAdForm = () => {
     <AdForm
       action={handleSubmit}
       actionText='Edit Ad'
-      title={ad.title}
+      title={ad.title}git 
       content={ad.content}
       publicationDate={ad.publicationDate}
       photo={ad.photo}

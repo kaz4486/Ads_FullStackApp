@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Alert, Button, Spinner } from 'react-bootstrap';
-import { Form } from 'react-bootstrap';
+import { Alert, Button, Spinner, Form } from 'react-bootstrap';
 import { AUTH_URL } from '../../../configs/config';
 
 const Register = () => {
