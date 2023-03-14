@@ -35,6 +35,7 @@ app.use(
       'http://localhost:3001',
       'http://localhost:8000',
       'https://lit-wave-35985.herokuapp.com',
+      'https://adsfullstackapp.kaz4486.repl.co/',
     ],
     credentials: true,
   })

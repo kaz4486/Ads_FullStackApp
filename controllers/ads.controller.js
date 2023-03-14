@@ -14,6 +14,7 @@ exports.getAll = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
+  console.log('1');
   try {
     const ad = await Ad.findById(req.params.id).populate('sellerInfo');
     if (ad) {
@@ -26,11 +27,14 @@ exports.getById = async (req, res) => {
 };
 
 exports.getBySearchPhrase = async (req, res) => {
+  console.log('1', req.params);
   try {
     const pattern = req.params.searchPhrase;
+    console.log('2', pattern);
     const ad = await Ad.find({
       title: { $regex: pattern, $options: 'i' },
     }).populate('sellerInfo');
+    console.log(ad);
     if (ad.length > 0) return res.json(ad);
     return res.status(404).json({ message: 'Not found' });
   } catch (err) {
