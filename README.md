@@ -1,1 +1,1 @@
-https://lit-wave-35985.herokuapp.com/
+https://AdsFullStackApp.kaz4486.repl.co
