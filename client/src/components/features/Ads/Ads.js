@@ -1,4 +1,4 @@
-import { Alert, Progress } from 'reactstrap';
+import { Alert, Spinner } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAds, getRequest, loadAdsRequest } from '../../../redux/adsRedux';
 import { useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ const Ads = () => {
   const request = useSelector(getRequest);
   const navigate = useNavigate();
 
+  console.log(ads);
   const [searchPhrase, setSearchPhrase] = useState('');
 
   useEffect(() => {
@@ -27,9 +28,9 @@ const Ads = () => {
     navigate(`/ads/search/${searchPhrase}`);
   };
 
-  if (request.pending) return <Progress animated color='primary' value={50} />;
+  if (request.pending) return <Spinner />;
   if (request.error) return <Alert color='warning'>{request.error}</Alert>;
-  if (!request.success || !ads.length)
+  if (!request.success || !ads?.length)
     return <Alert color='info'>No Ads</Alert>;
   if (request.success)
     return (

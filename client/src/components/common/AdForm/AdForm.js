@@ -5,10 +5,15 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useForm } from 'react-hook-form';
 import removeTags from '../../../utils/removeTags';
+import { useSelector } from 'react-redux';
+import { getRequest } from '../../../redux/adsRedux';
+import { Spinner } from 'reactstrap';
 
 const AdForm = ({ action, actionText, ...props }) => {
   const [contentError, setContentError] = useState(false);
   const [photoError, setPhotoError] = useState(false);
+
+  const request = useSelector(getRequest);
 
   const disabledSubmit = photoError;
 
@@ -56,6 +61,9 @@ const AdForm = ({ action, actionText, ...props }) => {
     formState: { errors },
   } = useForm();
 
+  if (request.pending) {
+    return <Spinner />;
+  }
   return (
     <Form onSubmit={validate(handleSubmit)}>
       <Form.Group controlId='formTitle'>

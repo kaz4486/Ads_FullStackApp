@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Alert, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Progress } from 'reactstrap';
+
 import {
   getAds,
   getRequest,
@@ -22,7 +22,7 @@ const SearchedAds = () => {
   }, [dispatch, searchPhrase]);
 
   if (request.pending)
-    return <Spinner animated color='primary' className='mt-3' />;
+    return <Spinner animation='border' color='primary' className='mt-3' />;
   if (request.error)
     return (
       <Alert color='warning' className='mt-3'>

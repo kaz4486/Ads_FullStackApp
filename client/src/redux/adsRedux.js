@@ -10,6 +10,8 @@ export const getAdById = ({ ads }, adId) => {
 };
 
 export const getRequest = ({ ads }) => ads.request;
+
+export const getStatus = ({ ads }) => ads.status;
 /* ACTIONS */
 
 //actions
@@ -26,6 +28,8 @@ const CREATE_AD = createActionName('CREATE_AD');
 const EDIT_AD = createActionName('EDIT_AD');
 const REMOVE_AD = createActionName('REMOVE_AD');
 
+const SET_STATUS = createActionName('SET_STATUS');
+
 export const startRequest = () => ({ type: START_REQUEST });
 export const endRequest = () => ({ type: END_REQUEST });
 export const errorRequest = () => ({ type: ERROR_REQUEST });
@@ -34,10 +38,11 @@ export const loadAds = (payload) => ({ payload, type: LOAD_ADS });
 export const createAd = (payload) => ({ payload, type: CREATE_AD });
 export const editAd = (payload) => ({ payload, type: EDIT_AD });
 export const removeAd = (payload) => ({ payload, type: REMOVE_AD });
+export const setStatus = (payload) => ({ payload, type: SET_STATUS });
 /* THUNKS */
 
 export const createAddRequest = (data) => {
-  console.log(data)
+  console.log(data);
   return async (dispatch) => {
     dispatch(startRequest({ name: CREATE_AD })); //po co to name?
     try {
@@ -51,6 +56,7 @@ export const createAddRequest = (data) => {
       );
 
       dispatch(createAd(res.data));
+      dispatch(setStatus(res.status));
       dispatch(endRequest({ name: CREATE_AD }));
     } catch (e) {
       dispatch(errorRequest({ name: CREATE_AD, error: e.message }));
@@ -131,6 +137,7 @@ export const removeAdRequest = (id) => {
 const initialState = {
   data: [],
   request: { pending: false, error: null, success: null },
+  status: null,
 };
 
 /* REDUCER */
@@ -170,6 +177,8 @@ export default function adsReducer(statePart = initialState, action = {}) {
         ...statePart,
         request: { pending: false, error: action.error, success: false },
       };
+    case SET_STATUS:
+      return { ...startRequest, status: action.payload };
     default:
       return statePart;
   }
