@@ -1,5 +1,6 @@
 import { API_URL } from '../configs/config';
 import axios from 'axios';
+import { set } from 'mongoose';
 
 //selectors
 export const getAds = ({ ads }) => ads.data;
@@ -42,7 +43,6 @@ export const setStatus = (payload) => ({ payload, type: SET_STATUS });
 /* THUNKS */
 
 export const createAddRequest = (data) => {
-  console.log(data);
   return async (dispatch) => {
     dispatch(startRequest({ name: CREATE_AD })); //po co to name?
     try {
@@ -71,6 +71,7 @@ export const loadAdsRequest = () => {
       let res = await axios.get(`${API_URL}/ads`);
 
       dispatch(loadAds(res.data));
+      dispatch(setStatus(null));
       dispatch(endRequest());
     } catch (e) {
       dispatch(errorRequest(e.message));
@@ -178,7 +179,7 @@ export default function adsReducer(statePart = initialState, action = {}) {
         request: { pending: false, error: action.error, success: false },
       };
     case SET_STATUS:
-      return { ...startRequest, status: action.payload };
+      return { ...statePart, status: action.payload };
     default:
       return statePart;
   }
