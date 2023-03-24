@@ -13,6 +13,7 @@
     "@restart/ui": "1.6.2",
     "axios": "^1.0.0",
     "bootstrap": "^5.2.3",
+    "bson": "3.0.0",
     "connect-mongo": "5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
