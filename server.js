@@ -1,9 +1,9 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
+import express, { urlencoded, json } from 'express';
+import cors from 'cors';
+import { join } from 'path';
+import { connect, connection } from 'mongoose';
+import session from 'express-session';
+import { create } from 'connect-mongo';
 require('dotenv').config();
 
 const app = express();
@@ -17,11 +17,11 @@ const SECRET = process.env.SECRET;
 
 connectionString = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.telw8lc.mongodb.net/Ads_FullStackAppDB?retryWrites=true&w=majority`;
 
-mongoose.connect(connectionString, {
+connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-const db = mongoose.connection;
+const db = connection;
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -41,8 +41,8 @@ app.use(
   })
 );
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(urlencoded({ extended: false }));
+app.use(json());
 
 app.set('trust proxy', 1);
 app.use(
@@ -50,7 +50,7 @@ app.use(
     secret: SECRET,
     resave: false,
     saveUninitialized: true,
-    store: MongoStore.create({
+    store: create({
       mongoUrl: connectionString,
       collection: 'sessions',
     }),
@@ -60,19 +60,19 @@ app.use(
   })
 );
 
-const adsRoutes = require('./routes/ads.routes');
-const authRoutes = require('./routes/auth.routes');
+import adsRoutes from './routes/ads.routes';
+import authRoutes from './routes/auth.routes';
 
 app.use('/api', adsRoutes);
 // app.use('/api', userRoutes);
 app.use('/auth', authRoutes);
 // może być też api/auth
 
-app.use(express.static(path.join(__dirname, '/client/build')));
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(join(__dirname, '/client/build'));
+app.use(join(__dirname, '/public'));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/client/build/index.html'));
+  res.sendFile(join(__dirname, '/client/build/index.html'));
 });
 
 db.once('open', () => {
