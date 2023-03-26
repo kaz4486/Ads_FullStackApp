@@ -19,6 +19,7 @@
     "clsx": "^1.2.1",
     "mongoose": "^7.0.2",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-images-upload": "^1.2.8",
     "react-quill": "^2.0.0",
